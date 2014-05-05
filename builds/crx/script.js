@@ -88,7 +88,7 @@
 'use strict';
 
 (function() {
-  var $, $$, Anonymize, ArchiveLink, Banner, Board, Build, Callbacks, CatalogLinks, CatalogThread, Clone, Color, Conf, Config, CustomCSS, DataBoard, DeleteLink, Dice, DownloadLink, Emoji, ExpandComment, ExpandThread, FappeTyme, Favicon, FileInfo, Filter, Flash, Fourchan, Gallery, Get, GlobalMessage, Header, IDColor, ImageExpand, ImageHover, ImageLoader, Index, InfiniScroll, JSColor, Keybinds, Labels, Linkify, Main, MascotTools, Mascots, Menu, Nav, Navigate, Notice, PSAHiding, Polyfill, Post, PostHiding, QR, QuoteBacklink, QuoteInline, QuoteMarkers, QuotePreview, QuoteStrikeThrough, QuoteThreading, Quotify, RandomAccessList, Recursive, Redirect, RelativeDates, RemoveSpoilers, Report, ReportLink, RevealSpoilers, Rice, Sauce, Settings, SimpleDict, Style, ThemeTools, Themes, Thread, ThreadExcerpt, ThreadStats, ThreadUpdater, ThreadWatcher, Time, TrashQueue, UI, Unread, Video, c, d, doc, editMascot, editTheme, g, userNavigation,
+  var $, $$, Anonymize, ArchiveLink, Banner, Board, Build, Callbacks, CatalogLinks, CatalogThread, Clone, Color, Conf, Config, CustomCSS, DataBoard, DeleteLink, Dice, DownloadLink, Emoji, ExpandComment, ExpandThread, FappeTyme, Favicon, FileInfo, Filter, Flash, Fourchan, Gallery, Get, GlobalMessage, Header, IDColor, ImageExpand, ImageHover, ImageLoader, Index, InfiniScroll, JSColor, Keybinds, Labels, Linkify, Main, MascotTools, Mascots, Menu, Nav, Navigate, Notice, PSAHiding, Polyfill, Post, PostHiding, QR, QuoteBacklink, QuoteInline, QuoteMarkers, QuotePreview, QuoteStrikeThrough, QuoteThreading, Quotify, RandomAccessList, Recursive, Redirect, RelativeDates, RemoveSlugs, RemoveSpoilers, Report, ReportLink, RevealSpoilers, Rice, Sauce, Settings, SimpleDict, Style, ThemeTools, Themes, Thread, ThreadExcerpt, ThreadStats, ThreadUpdater, ThreadWatcher, Time, TrashQueue, UI, Unread, Video, c, d, doc, editMascot, editTheme, g, userNavigation,
     __slice = [].slice,
     __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; },
     __hasProp = {}.hasOwnProperty,
@@ -130,7 +130,8 @@
         'Color User IDs': [false, 'Assign unique colors to user IDs on boards that use them'],
         'Remove Spoilers': [false, 'Remove all spoilers in text.'],
         'Reveal Spoilers': [false, 'Indicate spoilers if Remove Spoilers is enabled, or make the text appear hovered if Remove Spoiler is disabled.'],
-        'Show Support Message': [true, 'Warn if your browser is unsupported. 4chan X may not operate correctly on unsupported browser versions.']
+        'Show Support Message': [true, 'Warn if your browser is unsupported. 4chan X may not operate correctly on unsupported browser versions.'],
+        'Remove Slugs': [false, 'Remove slugs from thread reply links (for non-JSON Navigation users).']
       },
       'Linkification': {
         'Linkify': [true, 'Convert text into links where applicable.'],
@@ -16498,6 +16499,29 @@
     }
   };
 
+  RemoveSlugs = {
+    init: function() {
+      if (!(Conf['Remove Slugs'] && !Conf['JSON Navigation'])) {
+        return;
+      }
+      return $.ready(RemoveSlugs.initReady);
+    },
+    initReady: function() {
+      var el, op, postnum, _i, _len, _ref, _results;
+      if (g.VIEW !== 'thread') {
+        _ref = $$(".postContainer .post.op .postInfo");
+        _results = [];
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          op = _ref[_i];
+          postnum = $('a[title="Reply to this post"]', op);
+          el = $('.replylink', op);
+          _results.push(el.href = "thread/" + postnum.textContent);
+        }
+        return _results;
+      }
+    }
+  };
+
   RemoveSpoilers = {
     init: function() {
       if (Conf['Reveal Spoilers']) {
@@ -18329,6 +18353,7 @@
       init('Banner', Banner);
       init('Navigate', Navigate);
       init('Flash Features', Flash);
+      init('Remove Slugs', RemoveSlugs);
       $.on(d, 'AddCallback', Main.addCallback);
       return $.ready(Main.initReady);
     },

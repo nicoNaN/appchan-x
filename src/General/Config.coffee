@@ -73,6 +73,10 @@ Config =
         true
         'Warn if your browser is unsupported. 4chan X may not operate correctly on unsupported browser versions.'
       ]
+      'Remove Slugs': [
+        false
+        'Remove slugs from thread reply links (for non-JSON Navigation users).'
+      ]
 
     'Linkification':
       'Linkify': [

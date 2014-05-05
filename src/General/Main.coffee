@@ -180,6 +180,7 @@ Main =
     init 'Banner',                    Banner
     init 'Navigate',                  Navigate
     init 'Flash Features',            Flash
+    init 'Remove Slugs',              RemoveSlugs
 
     $.on d, 'AddCallback', Main.addCallback
     $.ready Main.initReady
